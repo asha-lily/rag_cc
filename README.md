@@ -2,6 +2,8 @@ Building a RAG pipeline using Claude Code.
 
 The purpose of this project is to refresh my knowledge of RAG and to gain experience using Claude Code (previously I have only used github copilot).
 
+<br>
+
 # RAG Pipeline Components
 
 ### 1. Ingestion & Parsing
@@ -71,3 +73,16 @@ The purpose of this project is to refresh my knowledge of RAG and to gain experi
 - logging queries, retrieved chunks & generations
 - record latency at each stage
 - capture user feedback to help find failure modes
+
+<br>
+<br>
+
+# Breaking down the problem
+
+First we want to load, parse, chunk and index the documents into the vector store. This can be considered an 'offline' phase.
+
+Once we have a vector store, we can perform RAG, i.e get an answer to a query. 
+
+So, we actually need to build 2 pipelines, one for each of the above stages.
+
+In this project we'll use LangChain.
