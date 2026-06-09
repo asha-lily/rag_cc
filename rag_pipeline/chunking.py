@@ -1,14 +1,15 @@
 from langchain_core.documents import Document
 from langchain_text_splitters import RecursiveCharacterTextSplitter
 
-DEFAULT_CHUNK_SIZE = 1000
-DEFAULT_CHUNK_OVERLAP = 150
+from rag_pipeline.config import ChunkingConfig
+
+config = ChunkingConfig()
 
 
 def chunk_documents(
     documents: list[Document],
-    chunk_size: int = DEFAULT_CHUNK_SIZE,
-    chunk_overlap: int = DEFAULT_CHUNK_OVERLAP,
+    chunk_size: int = config.chunk_size,
+    chunk_overlap: int = config.chunk_overlap,
 ) -> list[Document]:
     """Split page-level Documents into chunks.
 
