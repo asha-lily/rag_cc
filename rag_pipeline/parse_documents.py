@@ -6,7 +6,7 @@ from langchain_core.documents import Document
 
 
 def parse_document(document_path: Path) -> list[Document]:
-    """Load a PDF and return one cleaned `Document` per page with curated metadata."""
+    """Load a PDF and return one cleaned `Document` (+ metadata) per page."""
     loader = PyPDFLoader(document_path)
     raw_pages = loader.load()
 

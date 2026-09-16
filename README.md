@@ -1,6 +1,17 @@
-Building a RAG pipeline using Claude Code.
+Building an end-to-end RAG pipeline.
 
-The purpose of this project is to refresh my knowledge of RAG and to gain experience using Claude Code (previously I have only used github copilot).
+# Setup
+
+1. Install dependencies (creates the virtual environment):
+
+       uv sync
+
+2. Install the pre-commit hooks (one-time, per clone):
+
+       uv tool install pre-commit   # if you don't already have it
+       pre-commit install
+
+Ruff now runs automatically on staged files at every commit.
 
 <br>
 
@@ -71,6 +82,7 @@ The purpose of this project is to refresh my knowledge of RAG and to gain experi
 
 ### 12. Observability & Monitoring
 - logging queries, retrieved chunks & generations
+    - LangSmith?
 - record latency at each stage
 - capture user feedback to help find failure modes
 
@@ -81,8 +93,34 @@ The purpose of this project is to refresh my knowledge of RAG and to gain experi
 
 First we want to load, parse, chunk and index the documents into the vector store. This can be considered an 'offline' phase.
 
-Once we have a vector store, we can perform RAG, i.e get an answer to a query. 
+Once we have a vector store, we can perform retrieval and generation, i.e get an answer to a query. 
 
 So, we actually need to build 2 pipelines, one for each of the above stages.
 
 In this project we'll use LangChain.
+
+Once we have a basic RAG system working, we want to evaluate its performance. From there we can consider adding re-ranking, query processing, context assembly etc and see whether each change improves performance.
+
+
+# Sample Documents
+
+I am using my travel insurance documents - specifically the ones that don't contain any of my personal information. This is a good use case for RAG since for a single travel insurance policy there are multiple documents, some of which are dense with information.
+
+# Running Indexing
+
+`uv run python -m rag_pipeline.run_indexing`
+
+
+# Future Work
+
+Parsing
+- How are tables extracted using `PDFPlumberLoader`?
+- How can we extract images / diagrams? `UnstructuredPDFLoader`
+- How do the in-built langchain loaders compare to docling
+
+
+
+# Questions
+
+- where are classes suitable?
+- how does logging work? E.g in run_rag.py
