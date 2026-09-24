@@ -8,7 +8,6 @@ Building an end-to-end RAG pipeline.
 
 2. Install the pre-commit hooks (one-time, per clone):
 
-       uv tool install pre-commit   # if you don't already have it
        pre-commit install
 
 Ruff now runs automatically on staged files at every commit.
@@ -70,7 +69,11 @@ Ruff now runs automatically on staged files at every commit.
 ### 10. Evaluation
 - retrieval quality: precision, recall@k, MRR
 - generation quality: faithfulness/groundedness, answer relevance, hallucination rate
+    - faithfulness: whether the generated answer is actually supported by the retrieved information (i.e not hallucinating). Using the RAGAS framework this is calculated as the `number of claims supported by retrieved info` divided by `the total number of claims` (the answer is first broken down into 'claims')
+    - answer relevance: whether the answer actually addresses the question asked (penalises incomplete or off-topic answers, even if faithful). The RAGAS framework uses an LLM to generate synthetic questions that the answer could plausibly be answering, embeds them and calculates the cosine similarity between them and an embedding of the actual question.
 - frameworks: RAGAS, LLM-as-a-judge
+
+Note that RAGAS uses an LLM judge to calculate metrics. A potential source of bias is using the same LLM as a judge and as the generation model, since the model is more likely to rate it's own outputs higher than those of another model.
 
     *Choose metrics & frameworks.*
 
@@ -118,6 +121,8 @@ Parsing
 - How can we extract images / diagrams? `UnstructuredPDFLoader`
 - How do the in-built langchain loaders compare to docling
 
+Generation
+- Could make prompts configurable by defining them in the config file instead of in generation.py. Could then build `_PROMPT` inside `create_rag_chain()`.
 
 
 # Questions
