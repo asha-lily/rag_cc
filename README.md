@@ -1,3 +1,5 @@
+This project is a work in progress.
+
 Building an end-to-end RAG pipeline.
 
 # Setup
@@ -68,14 +70,30 @@ Ruff now runs automatically on staged files at every commit.
 
 ### 10. Evaluation
 - retrieval quality: precision, recall@k, MRR
+    - these can be calculated by manually labelling a golden dataset of queries mapped to relevant document IDs
 - generation quality: faithfulness/groundedness, answer relevance, hallucination rate
     - faithfulness: whether the generated answer is actually supported by the retrieved information (i.e not hallucinating). Using the RAGAS framework this is calculated as the `number of claims supported by retrieved info` divided by `the total number of claims` (the answer is first broken down into 'claims')
     - answer relevance: whether the answer actually addresses the question asked (penalises incomplete or off-topic answers, even if faithful). The RAGAS framework uses an LLM to generate synthetic questions that the answer could plausibly be answering, embeds them and calculates the cosine similarity between them and an embedding of the actual question.
-- frameworks: RAGAS, LLM-as-a-judge
+- frameworks: RAGAS, DeepEval
 
-Note that RAGAS uses an LLM judge to calculate metrics. A potential source of bias is using the same LLM as a judge and as the generation model, since the model is more likely to rate it's own outputs higher than those of another model.
+#### Choosing an LLM judge for RAGAS
 
-    *Choose metrics & frameworks.*
+`RAGAS` (Retrieval Augmented Generation ASessment) is a library for evaluating RAG pipelines. It provides built-in metrics such as faithfulness and answer relevance. I will use these for the first version of my pipeline, but later on I will consider which metrics are most appropriate to my problem space.
+
+Note that RAGAS uses an LLM judge to calculate metrics. A potential source of bias is using the same LLM as a judge and as the generation model, since the model is more likely to rate it's own outputs higher than those of another model. Bias could also be introduced by choosing an LLM judge from the same family as the generation model. Since I'm using Llama 3.2 as my generation model, I'll look outside of the Llama family for my judge model.
+
+Since RAGAS involves multiple reasoning steps, a reasonably powerful model should be used as the judge.
+
+It's important to check that the LLM judge is aligned with what a human would say. To check for this alignment I'll need to manually label some examples and compare to the judge's decisions.
+    
+Another implication of using LLM-as-a-judge for evaluation is the cost and latency of extra LLM calls. However, latency may not be too much of an issue if evaluation is run offline.
+
+#### Summary
+
+- Build a golden dataset of queries mapped to relevant document IDs. Automatically calculate retrieval quality metrics on this test set each time the pipeline is updated.
+- Use RAGAS to calculate generation-quality metrics, starting with faithfulness and answer relevancy. Choose which LLM to use as the judge and validate it against human-labelled samples.
+- Consider calculating domain-specific metrics (e.g custom judge metrics) in the future.
+
 
 ### 11. Serving & Orchestration
 - caching
@@ -123,9 +141,3 @@ Parsing
 
 Generation
 - Could make prompts configurable by defining them in the config file instead of in generation.py. Could then build `_PROMPT` inside `create_rag_chain()`.
-
-
-# Questions
-
-- where are classes suitable?
-- how does logging work? E.g in run_rag.py
