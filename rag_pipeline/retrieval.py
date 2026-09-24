@@ -4,10 +4,7 @@ from langchain_core.documents import Document
 from langchain_core.retrievers import BaseRetriever
 from langchain_huggingface import HuggingFaceEmbeddings
 
-from rag_pipeline.config import (
-    EmbeddingModelConfig,
-    RetrievalConfig
-)
+from rag_pipeline.config import EmbeddingModelConfig, RetrievalConfig
 
 embedding_config = EmbeddingModelConfig
 retrieval_config = RetrievalConfig()
@@ -21,8 +18,10 @@ def retrieve(
     embedding_model: HuggingFaceEmbeddings,
     k: int = DEFAULT_K,
 ) -> list[Document]:
-    """Return the k most relevant chunks for query."""
-    query_vector = embedding_model.embed_query(embedding_config.query_instruction + query)
+    """Embed the query and return the k most relevant chunks."""
+    query_vector = embedding_model.embed_query(
+        embedding_config.query_instruction + query
+    )
     return store.similarity_search_by_vector(query_vector, k=k)
 
 
@@ -33,16 +32,18 @@ def retrieve_with_scores(
     k: int = DEFAULT_K,
 ) -> list[tuple[Document, float]]:
     """
-    Return the k most relevant chunks paired with their relevance scores.
+    Return the k most relevant chunks along with their relevance scores.
     Scores are normalised cosine similarities in [0, 1].
     """
-    query_vector = embedding_model.embed_query(embedding_config.query_instruction + query)
+    query_vector = embedding_model.embed_query(
+        embedding_config.query_instruction + query
+    )
     return store.similarity_search_by_vector_with_relevance_scores(query_vector, k=k)
 
 
 class DocumentRetriever(BaseRetriever):
     """LangChain-compatible retriever.
-    
+
     This is the expected format for use in LCEL chains. It has a `.invoke()` method.
     """
 

@@ -35,3 +35,11 @@ class RetrievalConfig:
 class GenerationConfig:
     model_name: str = "llama3.2"
     max_tokens: int = 1024
+
+
+@dataclass
+class RAGASConfig:
+    """Define which LLM to use for RAGAS evaluation."""
+
+    model_name: str = "llama3.2"
+    max_tokens: int = 1024
