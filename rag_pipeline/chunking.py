@@ -25,6 +25,9 @@ def chunk_documents(
     for document in documents:
         for chunk_index, chunk in enumerate(splitter.split_documents([document])):
             chunk.metadata["chunk_index"] = chunk_index
+            medicine = chunk.metadata.get("medicine")
+            if medicine:
+                chunk.page_content = f"Medicine: {medicine}\n\n{chunk.page_content}"
             chunks.append(chunk)
 
     return chunks

@@ -3,12 +3,9 @@ from dataclasses import dataclass
 
 
 @dataclass
-class SampleDocsConfig:
-    doc1_path: Path = Path(
-        "/Users/ashapatel/Documents/projects/rag_cc/documents/insurance-product-information-document.pdf"
-    )
-    doc2_path: Path = Path(
-        "/Users/ashapatel/Documents/projects/rag_cc/documents/policy-wording.pdf"
+class PILDocsConfig:
+    docs_dir: Path = Path(
+        "/Users/ashapatel/Documents/projects/rag_cc/leaflets_and_guidelines/pils"
     )
 
 
